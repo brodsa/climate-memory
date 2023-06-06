@@ -1,5 +1,5 @@
-import {generateBoard, parametersBoard} from './board.js';
-import {makeBackgroundDark, makeBackgroundNormal} from '/assets/js/index.js';
+import {generateBoard, parametersBoard} from './board.js'
+import {makeBackgroundDark, makeBackgroundNormal} from '/assets/js/index.js'
 
 /** *****************************************
  *          GAME START
@@ -13,7 +13,7 @@ var parametersGame = {
     totalFlips: 0,
     pairFlips: 0,
     secondsInMinute: 60,
-};
+}
 
 var cardsModal
 var cards
@@ -21,25 +21,25 @@ var cards
 export const startGame = () => {
     generateBoard()
 
-    cardsModal = document.querySelector(".card__modal");
-    cards = document.querySelectorAll(".card");
+    cardsModal = document.querySelector(".card__modal")
+    cards = document.querySelectorAll(".card")
 
 // add event listener
-    cards.forEach(card => card.addEventListener('click', flipCard));
-    cardsModal.addEventListener('click', closeCardsModal);
+    cards.forEach(card => card.addEventListener('click', flipCard))
+    cardsModal.addEventListener('click', closeCardsModal)
 
 
     /**
      * Display the time in the board game in minutes and seconds.
      */
-    let timeSecond = 0;
-    const textTime = document.getElementById('total-time');
+    let timeSecond = 0
+    const textTime = document.getElementById('total-time')
     let getTime = setInterval(function () {
-        timeSecond++;
-        let seconds = (timeSecond % parametersGame.secondsInMinute).toString().padStart(2, '0');
-        let minutes = (Math.floor(timeSecond / parametersGame.secondsInMinute)).toString().padStart(2, '0');
-        textTime.innerText = `${minutes}:${seconds}`;
-    }, 1200);
+        timeSecond++
+        let seconds = (timeSecond % parametersGame.secondsInMinute).toString().padStart(2, '0')
+        let minutes = (Math.floor(timeSecond / parametersGame.secondsInMinute)).toString().padStart(2, '0')
+        textTime.innerText = `${minutes}:${seconds}`
+    }, 1200)
 }
 
 
@@ -48,25 +48,25 @@ export const startGame = () => {
  * code inspiration from https://www.youtube.com/watch?v=ZniVgo8U7ek
  */
 function flipCard() {
-    if (parametersGame.freezBoard) return;
+    if (parametersGame.freezBoard) return
 
-    this.classList.add('flip');
-    let cardContent = this.children[0].children[0];
+    this.classList.add('flip')
+    let cardContent = this.children[0].children[0]
 
     if (!parametersGame.flipedCard) {
         // the first card has fliped
-        parametersGame.flipedCard = true;
-        parametersGame.firstCard = this;
-        showCardsModal(cardContent);
+        parametersGame.flipedCard = true
+        parametersGame.firstCard = this
+        showCardsModal(cardContent)
     } else {
         // the second card has fliped
-        parametersGame.flipedCard = false;
-        parametersGame.secondCard = this;
+        parametersGame.flipedCard = false
+        parametersGame.secondCard = this
         // check for match
-        checkCardsMatch(cardContent);
+        checkCardsMatch(cardContent)
     }
-    parametersGame.totalFlips++;
-    displayFlips();
+    parametersGame.totalFlips++
+    displayFlips()
 }
 
 /**
@@ -76,18 +76,18 @@ function flipCard() {
 function showCardsModal(cardContent) {
     setTimeout(() => {
         // show the pop up window
-        cardsModal.classList.add('active');
+        cardsModal.classList.add('active')
 
-        const modalContent = cardContent.cloneNode(true);
-        const isText = modalContent.classList.contains('card__txt');
-        const classToAdd = isText ? 'card__modal--txt' : 'card__modal--img';
+        const modalContent = cardContent.cloneNode(true)
+        const isText = modalContent.classList.contains('card__txt')
+        const classToAdd = isText ? 'card__modal--txt' : 'card__modal--img'
 
-        modalContent.classList.add('card__modal--large');
-        cardsModal.appendChild(modalContent);
-        cardsModal.classList.add(classToAdd);
-        makeBackgroundDark();
+        modalContent.classList.add('card__modal--large')
+        cardsModal.appendChild(modalContent)
+        cardsModal.classList.add(classToAdd)
+        makeBackgroundDark()
 
-    }, 800);
+    }, 800)
 
 }
 
@@ -98,29 +98,29 @@ function showCardsModal(cardContent) {
  */
 function closeCardsModal() {
     // remove the active class to close the modal
-    cardsModal.classList.remove('active');
+    cardsModal.classList.remove('active')
 
     // remove type card specific classes
     cardsModal.classList.forEach(item => {
         switch (true) {
             //viel klarer im lesen und weitere Fälle sind möglich zu implementieren
             case item.includes(parametersBoard.cardTypes[0]):
-                cardsModal.classList.remove('card__modal--txt');
+                cardsModal.classList.remove('card__modal--txt')
                 break
             case item.includes(parametersBoard.cardTypes[1]):
-                cardsModal.classList.remove('card__modal--img');
-                break;
+                cardsModal.classList.remove('card__modal--img')
+                break
             default:
-                console.info('not implemented');
+                console.info('not implemented')
         }
-    });
+    })
 
     // activate the background again
-    makeBackgroundNormal();
+    makeBackgroundNormal()
     // remove the conent of the modal
-    cardsModal.innerHTML = '';
+    cardsModal.innerHTML = ''
     // flip the cards back
-    flipCardsBack();
+    flipCardsBack()
 
 }
 
@@ -134,19 +134,19 @@ function checkCardsMatch(cardContent) {
 
     switch (true) {
         case sameCardClickedTwice(): //if clicked on the same card
-            parametersGame.firstCard.classList.remove('flip');
-            parametersGame.totalFlips--;  // should not be considered as flip
+            parametersGame.firstCard.classList.remove('flip')
+            parametersGame.totalFlips--  // should not be considered as flip
             break
         case cardsMatch(): // if clicked on the matched card
-            showCardsModal(cardContent);
-            keepCardsFliped();
-            parametersGame.pairFlips++;
-            break;
+            showCardsModal(cardContent)
+            keepCardsFliped()
+            parametersGame.pairFlips++
+            break
         default:
             // prepare the win board each time, but show when all cards are flipped
             setTimeout(() => {
-                showWinBoard(cards);
-            }, 400);
+                showWinBoard(cards)
+            }, 400)
     }
 }
 
@@ -163,8 +163,8 @@ function cardsMatch() {
  * The function is used in case the is a match.
  */
 function keepCardsFliped() {
-    parametersGame.firstCard.removeEventListener('click', flipCard);
-    parametersGame.secondCard.removeEventListener('click', flipCard);
+    parametersGame.firstCard.removeEventListener('click', flipCard)
+    parametersGame.secondCard.removeEventListener('click', flipCard)
 }
 
 /**
@@ -176,23 +176,23 @@ function flipCardsBack() {
 
     // check for unmatch and flip back by removing the class flip
     if (cardsDontMatch()) {
-        parametersGame.freezBoard = true;
+        parametersGame.freezBoard = true
 
         setTimeout(() => {
-            parametersGame.firstCard.classList.remove('flip');
-            parametersGame.secondCard.classList.remove('flip');
-            parametersGame.freezBoard = false;
-            parametersGame.secondCard = undefined; // set the second to undefined in order to make the if condition in closeModal() correct
-        }, 800);
+            parametersGame.firstCard.classList.remove('flip')
+            parametersGame.secondCard.classList.remove('flip')
+            parametersGame.freezBoard = false
+            parametersGame.secondCard = undefined // set the second to undefined in order to make the if condition in closeModal() correct
+        }, 800)
 
     } else {
-        parametersGame.secondCard = undefined; // otherwise set the second to undefined in order to make the if condition correct
+        parametersGame.secondCard = undefined // otherwise set the second to undefined in order to make the if condition correct
     }
 }
 
 function cardsDontMatch() {
     // create a variable which helps to check if they dont match in order to be fliped back
-    let secondCard = typeof parametersGame.secondCard != 'undefined' ? parametersGame.secondCard.dataset.key : false;
+    let secondCard = typeof parametersGame.secondCard != 'undefined' ? parametersGame.secondCard.dataset.key : false
 
     return (parametersGame.firstCard.dataset.key !== secondCard) && secondCard
 }
@@ -201,8 +201,8 @@ function cardsDontMatch() {
  * Display the number of fliped card
  */
 function displayFlips() {
-    let textFlips = document.getElementById('total-flips');
-    textFlips.innerText = `${parametersGame.totalFlips}`;
+    let textFlips = document.getElementById('total-flips')
+    textFlips.innerText = `${parametersGame.totalFlips}`
 }
 
 
@@ -210,26 +210,26 @@ function displayFlips() {
  * Display win board, containing the number of total flips and time
  */
 function showWinBoard() {
-    const totalNumberCards = cards.length / 2;
-    const winBoard = document.querySelector(".win-board");
-    const winBoardTime = document.querySelector("#win-board__time");
-    const winBoardFlips = document.querySelector("#win-board__flips");
+    const totalNumberCards = cards.length / 2
+    const winBoard = document.querySelector(".win-board")
+    const winBoardTime = document.querySelector("#win-board__time")
+    const winBoardFlips = document.querySelector("#win-board__flips")
 
     if (totalNumberCards === parametersGame.pairFlips) {
-        clearInterval(getTime);
+        clearInterval(getTime)
 
-        const time = document.querySelector("#total-time").innerText;
-        const flips = document.querySelector("#total-flips").innerText;
+        const time = document.querySelector("#total-time").innerText
+        const flips = document.querySelector("#total-flips").innerText
 
-        winBoardTime.innerText = time;
-        winBoardFlips.innerText = flips;
-        winBoard.classList.add('active');
+        winBoardTime.innerText = time
+        winBoardFlips.innerText = flips
+        winBoard.classList.add('active')
 
         setTimeout(() => {
-            winBoard.classList.remove('active');
+            winBoard.classList.remove('active')
             // remove the pop up window of the last card
-            cardsModal.classList.remove('active');
-            makeBackgroundNormal();
-        }, 3500);
+            cardsModal.classList.remove('active')
+            makeBackgroundNormal()
+        }, 3500)
     }
 }
