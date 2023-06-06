@@ -38,7 +38,26 @@ const generateBoard = () => {
         card.append(cardFront);
         card.append(cardBack);
     });
+};
 
+/**
+ * Select random cards based on the given number of pairs (numOfCards).
+ * For the game, the numOfCards stays fixed.
+ * Return an object of 6 card pairs (6 images and 6 text).
+ */
+const selectRandomCards = (numOfPairs) => {
+    const shuffledCards = data.sort(() => 0.5 - Math.random());  // shuffle the array elements from https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
+    const selectedBasis = shuffledCards.slice(0,numOfPairs);
+
+    // add the type of the card
+    const selectedImgTxt = generateTextImgDataCards(selectedBasis);
+    const selectedImg = selectedImgTxt[0];
+    const selectedTxt = selectedImgTxt[1];
+
+    // put img cards and txt cards together and shuffle the array again
+    const shuffled = selectedTxt.concat(selectedImg);
+    const shuffledData = shuffled.sort(() => 0.5 - Math.random());
+    return shuffledData;
 };
 
 
@@ -63,28 +82,6 @@ const generateTextImgDataCards = (selectedBasis) => {
 
     return [selectedImg, selectedTxt];
 };
-
-
-/**
- * Select random cards based on the given number of pairs (numOfCards).
- * For the game, the numOfCards stays fixed.
- * Return an object of 6 card pairs (6 images and 6 text).
- */
-const selectRandomCards = (numOfPairs) => {
-    const shuffledCards = data.sort(() => 0.5 - Math.random());  // shuffle the array elements from https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-    const selectedBasis = shuffledCards.slice(0,numOfPairs);
-
-    // add the type of the card
-    const selectedImgTxt = generateTextImgDataCards(selectedBasis);
-    const selectedImg = selectedImgTxt[0];
-    const selectedTxt = selectedImgTxt[1];
-
-    // put img cards and txt cards together and shuffle the array again
-    const shuffled = selectedTxt.concat(selectedImg);
-    const shuffledData = shuffled.sort(() => 0.5 - Math.random());
-    return shuffledData;
-};
-
 
 /**
  * Add the attributes to the cards elements
@@ -111,6 +108,5 @@ const addCardContent = ((cardFront, cardData) => {
         console.info('not implemented for such type');
     }
 });
-
 
 export {generateBoard, parametersBoard}
