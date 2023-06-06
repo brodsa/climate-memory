@@ -6,8 +6,8 @@ import {makeBackgroundDark, makeBackgroundNormal} from '/assets/js/index.js'
  ******************************************** */
 
 var parametersGame = {
-    flipedCard: false,
-    freezBoard: false,
+    flippedCard: false,
+    freezeBoard: false,
     firstCard: undefined,
     secondCard: undefined,
     totalFlips: 0,
@@ -48,19 +48,19 @@ export const startGame = () => {
  * code inspiration from https://www.youtube.com/watch?v=ZniVgo8U7ek
  */
 function flipCard() {
-    if (parametersGame.freezBoard) return
+    if (parametersGame.freezeBoard) return
 
     this.classList.add('flip')
     let cardContent = this.children[0].children[0]
 
-    if (!parametersGame.flipedCard) {
+    if (!parametersGame.flippedCard) {
         // the first card has fliped
-        parametersGame.flipedCard = true
+        parametersGame.flippedCard = true
         parametersGame.firstCard = this
         showCardsModal(cardContent)
     } else {
         // the second card has fliped
-        parametersGame.flipedCard = false
+        parametersGame.flippedCard = false
         parametersGame.secondCard = this
         // check for match
         checkCardsMatch(cardContent)
@@ -102,8 +102,11 @@ function closeCardsModal() {
 
     // remove type card specific classes
     cardsModal.classList.forEach(item => {
+
+        //Ich denke der type müsste in den params gleich der klasse sein
+        //console.log(cardsModal.classList) enthält einen array ind includes checkt keine teilwerte
         switch (true) {
-            //viel klarer im lesen und weitere Fälle sind möglich zu implementieren
+            //viel klarer im Lesen und weitere Fälle sind möglich zu implementieren
             case item.includes(parametersBoard.cardTypes[0]):
                 cardsModal.classList.remove('card__modal--txt')
                 break
@@ -111,7 +114,7 @@ function closeCardsModal() {
                 cardsModal.classList.remove('card__modal--img')
                 break
             default:
-                console.info('not implemented')
+                console.info('close card mode is not implemented for this card')
         }
     })
 
@@ -176,12 +179,12 @@ function flipCardsBack() {
 
     // check for unmatch and flip back by removing the class flip
     if (cardsDontMatch()) {
-        parametersGame.freezBoard = true
+        parametersGame.freezeBoard = true
 
         setTimeout(() => {
             parametersGame.firstCard.classList.remove('flip')
             parametersGame.secondCard.classList.remove('flip')
-            parametersGame.freezBoard = false
+            parametersGame.freezeBoard = false
             parametersGame.secondCard = undefined // set the second to undefined in order to make the if condition in closeModal() correct
         }, 800)
 
